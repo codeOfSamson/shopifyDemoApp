@@ -10,7 +10,6 @@ import { createCart, addCartLine } from "@/lib/shopify";
 export async function addToCart(
   merchandiseId: string,
 ): Promise<{ ok: boolean; message?: string }> {
-  console.log("[server] addToCart called", merchandiseId);
   try {
     const cookieStore = await cookies();
     const existingCartId = cookieStore.get("cartId")?.value;

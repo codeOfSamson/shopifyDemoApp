@@ -14,7 +14,8 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const firstVariant = product.variants.edges[0]?.node;
-  console.log(product.variants);
+  const secondVariant = product.variants.edges[1]?.node;
+  console.log(secondVariant);
 
   return (
     <main>
@@ -27,6 +28,16 @@ export default async function ProductPage({
         <AddToCartButton
           merchandiseId={firstVariant.id}
           available={firstVariant.availableForSale}
+        />
+      )}
+
+      <p>
+        {secondVariant?.price.amount} {secondVariant?.price.currencyCode}
+      </p>
+      {secondVariant && (
+        <AddToCartButton
+          merchandiseId={secondVariant.id}
+          available={secondVariant.availableForSale}
         />
       )}
     </main>

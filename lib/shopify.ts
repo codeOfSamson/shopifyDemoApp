@@ -33,8 +33,6 @@ export async function shopifyFetch<T>({
     ...(cache ? { cache } : { next: { tags } }),
   });
 
-  console.log(cache, "from call shopify Fetch");
-
   const json = await res.json();
 
   if (json.errors) {

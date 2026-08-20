@@ -17,7 +17,6 @@ export function AddToCartButton({
   const [error, setError] = useState<string | null>(null);
 
   function handleClick() {
-    console.log("[browser] handleClick fired", merchandiseId);
     setError(null);
     startTransition(async () => {
       const result = await addToCart(merchandiseId);
