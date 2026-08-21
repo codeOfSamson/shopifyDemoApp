@@ -1,7 +1,9 @@
-import { Card, Table, Badge, type TableColumn } from "@repo/ui";
+import { Suspense } from "react";
+import { Card, Table, Badge, Skeleton, type TableColumn } from "@repo/ui";
 import { hasAdminCredentials, listInventoryProducts } from "@/lib/shopifyAdmin";
 import { flattenRows, type InventoryRow } from "@/lib/inventoryRow";
 import { stockStatus } from "@/lib/lowStock";
+import { ReorderRecommendations } from "./ReorderRecommendations";
 
 const columns: TableColumn<InventoryRow>[] = [
   { key: "product", header: "Product", render: (row) => row.productTitle },
@@ -41,6 +43,15 @@ export default async function InventoryPage() {
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold text-slate-900">Inventory</h1>
       <Table<InventoryRow> columns={columns} rows={rows} getRowKey={(row) => row.key} emptyMessage="No products found." />
+      <Suspense
+        fallback={
+          <Card>
+            <Skeleton className="h-24 w-full" />
+          </Card>
+        }
+      >
+        <ReorderRecommendations products={products} />
+      </Suspense>
     </div>
   );
 }
