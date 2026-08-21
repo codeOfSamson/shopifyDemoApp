@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ReportWebVitals } from "./ReportWebVitals";
 
 export default function RootLayout({
   children,
@@ -8,6 +9,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans bg-slate-50 text-slate-900">
+        <ReportWebVitals />
         <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
           <a href="/" className="text-lg font-semibold">
             HLTH Shop

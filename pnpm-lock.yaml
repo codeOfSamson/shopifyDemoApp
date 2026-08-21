@@ -75,6 +75,9 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       next:
         specifier: ^15.0.0
         version: 15.5.23(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
