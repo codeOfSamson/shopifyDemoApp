@@ -1,6 +1,7 @@
 import { getLandingPageBySlug } from "@/lib/landingPages";
 import { getProductByHandle } from "@/lib/shopify";
 import { AddToCartButton } from "@/app/cart/AddToCartButton";
+import { Card, Badge } from "@repo/ui";
 import { notFound } from "next/navigation";
 
 export default async function CreativeLandingPage({
@@ -19,28 +20,31 @@ export default async function CreativeLandingPage({
   const firstVariant = product.variants.edges[0]?.node;
 
   return (
-    <main>
-      <h1>{product.title}</h1>
-      {landingPage.discountCode && (
-        <p>Use code {landingPage.discountCode} at checkout</p>
-      )}
-      <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-      <p>
-        {firstVariant?.price.amount} {firstVariant?.price.currencyCode}
-      </p>
-      {firstVariant && (
-        <AddToCartButton
-          merchandiseId={firstVariant.id}
-          available={firstVariant.availableForSale}
+    <main className="mx-auto max-w-2xl p-8">
+      <Card>
+        <h1 className="text-2xl font-semibold">{product.title}</h1>
+        {landingPage.discountCode && (
+          <Badge tone="success" className="mt-2">
+            Use code {landingPage.discountCode} at checkout
+          </Badge>
+        )}
+        <div
+          className="prose prose-slate mt-4 max-w-none"
+          dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
         />
-      )}
+        <p className="mt-4 text-lg font-medium">
+          {firstVariant?.price.amount} {firstVariant?.price.currencyCode}
+        </p>
+        {firstVariant && (
+          <div className="mt-4">
+            <AddToCartButton merchandiseId={firstVariant.id} available={firstVariant.availableForSale} />
+          </div>
+        )}
+      </Card>
     </main>
   );
 }
 
-// Known/live campaigns get pre-rendered at build time; anything the CMS
-// gains after deploy falls back to on-demand generation and gets cached
-// (and tag-invalidated) from then on — same pattern as the product PDP.
 export async function generateStaticParams() {
-  return []; // fill with { slug } for known live campaigns
+  return [];
 }

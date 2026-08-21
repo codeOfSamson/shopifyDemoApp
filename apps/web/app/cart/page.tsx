@@ -1,19 +1,41 @@
 import { cookies } from "next/headers";
 import { getCart } from "@/lib/shopify";
+import { Card, Table, type TableColumn } from "@repo/ui";
+
+type CartLine = {
+  id: string;
+  quantity: number;
+  merchandise: {
+    title: string;
+    price: { amount: string; currencyCode: string };
+    product: { title: string };
+  };
+};
+
+const columns: TableColumn<CartLine>[] = [
+  { key: "product", header: "Product", render: (line) => line.merchandise.product.title },
+  { key: "variant", header: "Variant", render: (line) => line.merchandise.title },
+  { key: "qty", header: "Qty", render: (line) => String(line.quantity) },
+  {
+    key: "price",
+    header: "Price",
+    render: (line) => `${line.merchandise.price.amount} ${line.merchandise.price.currencyCode}`,
+  },
+];
 
 export default async function CartPage() {
   const cookieStore = await cookies();
   const cartId = cookieStore.get("cartId")?.value;
-  console.log("cookieStore", cookieStore);
-  console.log("cartId", cartId);
 
   if (!cartId) {
     return (
-      <main>
-        <h1>Your cart</h1>
-        <p>
-          No cart cookie found yet — add something from a product page first.
-        </p>
+      <main className="mx-auto max-w-2xl p-8">
+        <Card>
+          <h1 className="text-2xl font-semibold">Your cart</h1>
+          <p className="mt-2 text-sm text-slate-600">
+            No cart cookie found yet — add something from a product page first.
+          </p>
+        </Card>
       </main>
     );
   }
@@ -22,43 +44,34 @@ export default async function CartPage() {
 
   if (!cart) {
     return (
-      <main>
-        <h1>Your cart</h1>
-        <p>
-          Cookie has a cartId (<code>{cartId}</code>) but Shopify returned no
-          cart for it — it may have expired or the ID is stale.
-        </p>
+      <main className="mx-auto max-w-2xl p-8">
+        <Card>
+          <h1 className="text-2xl font-semibold">Your cart</h1>
+          <p className="mt-2 text-sm text-slate-600">
+            Cookie has a cartId (<code>{cartId}</code>) but Shopify returned no cart for it — it may have
+            expired or the ID is stale.
+          </p>
+        </Card>
       </main>
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lines = cart.lines.edges.map((edge: any) => edge.node);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineItems = lines.map((line: any) => (
-    <li key={line.id}>
-      {line.merchandise.product.title} — {line.merchandise.title} ×{" "}
-      {line.quantity} — {line.merchandise.price.amount}{" "}
-      {line.merchandise.price.currencyCode}
-    </li>
-  ));
+  const lines: CartLine[] = cart.lines.edges.map((edge: { node: CartLine }) => edge.node);
 
   return (
-    <main>
-      <h1>Your cart</h1>
-      {lines.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <ul>
-          {lineItems}
-        </ul>
-      )}
-      <p>
-        Total: {cart.cost.totalAmount.amount}{" "}
-        {cart.cost.totalAmount.currencyCode}
-      </p>
-      <a href={cart.checkoutUrl}>Checkout</a>
+    <main className="mx-auto max-w-2xl p-8">
+      <Card>
+        <h1 className="text-2xl font-semibold">Your cart</h1>
+        <div className="mt-4">
+          <Table<CartLine> columns={columns} rows={lines} getRowKey={(line) => line.id} emptyMessage="Your cart is empty." />
+        </div>
+        <p className="mt-4 text-right text-lg font-medium">
+          Total: {cart.cost.totalAmount.amount} {cart.cost.totalAmount.currencyCode}
+        </p>
+        <a href={cart.checkoutUrl} className="mt-4 inline-block text-brand-600 hover:underline">
+          Checkout
+        </a>
+      </Card>
     </main>
   );
 }

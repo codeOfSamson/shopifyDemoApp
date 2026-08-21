@@ -1,11 +1,9 @@
 "use client";
 
 import { useTransition, useState } from "react";
+import { Button } from "@repo/ui";
 import { addToCart } from "./actions";
 
-// Directly addresses the PDP audit scenario in PRACTICE.md Exercise 1:
-// disabled when out of stock, pending state prevents double-submit,
-// errors are caught and shown inline instead of leaking a raw exception.
 export function AddToCartButton({
   merchandiseId,
   available,
@@ -20,20 +18,28 @@ export function AddToCartButton({
     setError(null);
     startTransition(async () => {
       const result = await addToCart(merchandiseId);
-      if (!result.ok) setError(result.message ?? null);
+      if (!result.ok) setError(result.message ?? "Something went wrong.");
     });
   }
 
   if (!available) {
-    return <button disabled>Out of stock</button>;
+    return (
+      <Button variant="secondary" disabled>
+        Out of stock
+      </Button>
+    );
   }
 
   return (
-    <div>
-      <button onClick={handleClick} disabled={isPending}>
+    <div className="flex flex-col gap-2">
+      <Button onClick={handleClick} disabled={isPending}>
         {isPending ? "Adding…" : "Add to cart"}
-      </button>
-      {error && <p role="alert">{error}</p>}
+      </Button>
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

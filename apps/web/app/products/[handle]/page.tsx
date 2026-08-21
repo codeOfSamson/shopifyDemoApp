@@ -1,9 +1,8 @@
 import { getProductByHandle } from "@/lib/shopify";
 import { AddToCartButton } from "@/app/cart/AddToCartButton";
+import { Card } from "@repo/ui";
 import { notFound } from "next/navigation";
 
-// Fixes "Exercise 1" class of issue: don't let a missing product 500,
-// and don't let an out-of-stock variant reach the cart mutation.
 export default async function ProductPage({
   params,
 }: {
@@ -14,39 +13,28 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const firstVariant = product.variants.edges[0]?.node;
-  const secondVariant = product.variants.edges[1]?.node;
-  console.log(secondVariant);
 
   return (
-    <main>
-      <h1>{product.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-      <p>
-        {firstVariant?.price.amount} {firstVariant?.price.currencyCode}
-      </p>
-      {firstVariant && (
-        <AddToCartButton
-          merchandiseId={firstVariant.id}
-          available={firstVariant.availableForSale}
+    <main className="mx-auto max-w-2xl p-8">
+      <Card>
+        <h1 className="text-2xl font-semibold">{product.title}</h1>
+        <div
+          className="prose prose-slate mt-4 max-w-none"
+          dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
         />
-      )}
-
-      <p>
-        {secondVariant?.price.amount} {secondVariant?.price.currencyCode}
-      </p>
-      {secondVariant && (
-        <AddToCartButton
-          merchandiseId={secondVariant.id}
-          available={secondVariant.availableForSale}
-        />
-      )}
+        <p className="mt-4 text-lg font-medium">
+          {firstVariant?.price.amount} {firstVariant?.price.currencyCode}
+        </p>
+        {firstVariant && (
+          <div className="mt-4">
+            <AddToCartButton merchandiseId={firstVariant.id} available={firstVariant.availableForSale} />
+          </div>
+        )}
+      </Card>
     </main>
   );
 }
 
-// Static params for known products at build time — marketing-heavy catalogs
-// still get most pages pre-rendered; anything new falls back to on-demand
-// generation and gets cached going forward.
 export async function generateStaticParams() {
-  return []; // fill with { handle } objects from a collection query if desired
+  return [];
 }
