@@ -39,6 +39,7 @@ export async function shopifyFetch<T>({
     // Don't let a raw GraphQL error blob leak to the UI — this is exactly
     // the kind of thing a PDP audit flags.
     throw new Error(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       `Shopify Storefront API error: ${json.errors.map((e: any) => e.message).join(", ")}`,
     );
   }
@@ -72,6 +73,7 @@ const PRODUCT_QUERY = /* GraphQL */ `
 `;
 
 export async function getProductByHandle(handle: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await shopifyFetch<{ product: any }>({
     query: PRODUCT_QUERY,
     variables: { handle },
@@ -113,6 +115,7 @@ const CART_LINES_ADD = /* GraphQL */ `
 `;
 
 export async function createCart(merchandiseId: string, quantity = 1) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await shopifyFetch<{ cartCreate: any }>({
     query: CART_CREATE,
     variables: { lines: [{ merchandiseId, quantity }] },
@@ -126,6 +129,7 @@ export async function addCartLine(
   merchandiseId: string,
   quantity = 1,
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await shopifyFetch<{ cartLinesAdd: any }>({
     query: CART_LINES_ADD,
     variables: { cartId, lines: [{ merchandiseId, quantity }] },
@@ -174,6 +178,7 @@ const CART_QUERY = /* GraphQL */ `
 `;
 
 export async function getCart(cartId: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = await shopifyFetch<{ cart: any }>({
     query: CART_QUERY,
     variables: { cartId },

@@ -20,7 +20,7 @@ export function AddToCartButton({
     setError(null);
     startTransition(async () => {
       const result = await addToCart(merchandiseId);
-      if (!result.ok) setError(result.message);
+      if (!result.ok) setError(result.message ?? null);
     });
   }
 

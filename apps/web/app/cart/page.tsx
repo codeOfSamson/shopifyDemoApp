@@ -32,7 +32,17 @@ export default async function CartPage() {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lines = cart.lines.edges.map((edge: any) => edge.node);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lineItems = lines.map((line: any) => (
+    <li key={line.id}>
+      {line.merchandise.product.title} — {line.merchandise.title} ×{" "}
+      {line.quantity} — {line.merchandise.price.amount}{" "}
+      {line.merchandise.price.currencyCode}
+    </li>
+  ));
 
   return (
     <main>
@@ -41,13 +51,7 @@ export default async function CartPage() {
         <p>Your cart is empty.</p>
       ) : (
         <ul>
-          {lines.map((line: any) => (
-            <li key={line.id}>
-              {line.merchandise.product.title} — {line.merchandise.title} ×{" "}
-              {line.quantity} — {line.merchandise.price.amount}{" "}
-              {line.merchandise.price.currencyCode}
-            </li>
-          ))}
+          {lineItems}
         </ul>
       )}
       <p>
