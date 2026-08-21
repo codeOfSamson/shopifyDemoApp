@@ -1,19 +1,11 @@
 {
   "name": "hlth-trial-practice",
   "private": true,
+  "packageManager": "pnpm@10.34.5",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "^15.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "20.17.6",
-    "@types/react": "19.2.18",
-    "typescript": "5.8.2"
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build"
   }
 }
