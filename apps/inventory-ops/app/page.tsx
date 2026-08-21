@@ -1,27 +1,9 @@
 import { Suspense } from "react";
-import { Card, Table, Badge, Skeleton, type TableColumn } from "@repo/ui";
+import { Card, Skeleton } from "@repo/ui";
 import { hasAdminCredentials, listInventoryProducts } from "@/lib/shopifyAdmin";
-import { flattenRows, type InventoryRow } from "@/lib/inventoryRow";
-import { stockStatus } from "@/lib/lowStock";
+import { flattenRows } from "@/lib/inventoryRow";
+import { SearchFilter } from "./SearchFilter";
 import { ReorderRecommendations } from "./ReorderRecommendations";
-
-const columns: TableColumn<InventoryRow>[] = [
-  { key: "product", header: "Product", render: (row) => row.productTitle },
-  { key: "variant", header: "Variant", render: (row) => row.variantTitle },
-  { key: "sku", header: "SKU", render: (row) => row.sku ?? "—" },
-  { key: "price", header: "Price", render: (row) => `$${row.price}` },
-  {
-    key: "stock",
-    header: "Stock",
-    render: (row) => {
-      const status = stockStatus(row.available);
-      const tone = status === "out" ? "danger" : status === "low" ? "warning" : "success";
-      const label =
-        status === "out" ? "Out of stock" : status === "low" ? `Low (${row.available})` : `${row.available} in stock`;
-      return <Badge tone={tone}>{label}</Badge>;
-    },
-  },
-];
 
 export default async function InventoryPage() {
   if (!hasAdminCredentials()) {
@@ -42,7 +24,7 @@ export default async function InventoryPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold text-slate-900">Inventory</h1>
-      <Table<InventoryRow> columns={columns} rows={rows} getRowKey={(row) => row.key} emptyMessage="No products found." />
+      <SearchFilter initialRows={rows} />
       <Suspense
         fallback={
           <Card>
