@@ -1,19 +1,16 @@
 {
   "name": "hlth-trial-practice",
   "private": true,
+  "packageManager": "pnpm@10.34.5",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "^15.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "dev": "concurrently -n web,inventory \"pnpm --filter web dev\" \"pnpm --filter inventory-ops dev\"",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build"
   },
   "devDependencies": {
-    "@types/node": "20.17.6",
-    "@types/react": "19.2.18",
-    "typescript": "5.8.2"
+    "@playwright/test": "^1.49.0",
+    "concurrently": "^9.1.0"
   }
 }
