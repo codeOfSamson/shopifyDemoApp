@@ -26,6 +26,14 @@ async function shopifyAdminFetch<T>(query: string, variables?: Record<string, un
     cache: "no-store", // inventory levels change too often to cache
   });
 
+  if (!res.ok) {
+    // A non-2xx response (bad/revoked token, rate limit, etc.) often
+    // doesn't come back as GraphQL JSON at all — check status before
+    // parsing so the error message is legible instead of a raw
+    // JSON-parse failure.
+    throw new Error(`Shopify Admin API request failed: ${res.status} ${res.statusText}`);
+  }
+
   const json = await res.json();
 
   if (json.errors) {

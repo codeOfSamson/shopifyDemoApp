@@ -9,6 +9,13 @@ type Recommendation = {
   available: number;
 };
 
+// Out-of-stock variants should surface before merely-low-stock ones.
+const SEVERITY_RANK: Record<ReturnType<typeof stockStatus>, number> = {
+  out: 0,
+  low: 1,
+  "in-stock": 2,
+};
+
 async function computeRecommendations(products: InventoryProduct[]): Promise<Recommendation[]> {
   return products
     .flatMap((product) =>
@@ -18,9 +25,12 @@ async function computeRecommendations(products: InventoryProduct[]): Promise<Rec
           id: variant.id,
           label: `${product.title} — ${variant.title}`,
           available: variant.available,
+          status: stockStatus(variant.available),
         })),
     )
-    .slice(0, 5);
+    .sort((a, b) => SEVERITY_RANK[a.status] - SEVERITY_RANK[b.status])
+    .slice(0, 5)
+    .map(({ id, label, available }) => ({ id, label, available }));
 }
 
 // Deliberately slower than the main product query — this is what makes

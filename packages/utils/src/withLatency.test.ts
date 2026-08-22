@@ -18,4 +18,13 @@ describe("withLatency", () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(45); // small tolerance for timer jitter
   });
+
+  it("propagates the wrapped function's rejection instead of swallowing it", async () => {
+    const failing = async () => {
+      throw new Error("boom");
+    };
+    const slow = withLatency(failing, { minMs: 5, maxMs: 10 });
+
+    await expect(slow()).rejects.toThrow("boom");
+  });
 });

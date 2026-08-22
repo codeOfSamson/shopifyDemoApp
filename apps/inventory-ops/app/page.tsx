@@ -5,6 +5,12 @@ import { flattenRows } from "@/lib/inventoryRow";
 import { SearchFilter } from "./SearchFilter";
 import { ReorderRecommendations } from "./ReorderRecommendations";
 
+// Credential state (env vars) can change between build and deploy, and this
+// page's no-credentials branch has no dynamic API of its own to force
+// per-request rendering — without this, `next build` would prerender
+// whichever branch matched at build time and bake it in forever.
+export const dynamic = "force-dynamic";
+
 export default async function InventoryPage() {
   if (!hasAdminCredentials()) {
     return (
@@ -18,6 +24,9 @@ export default async function InventoryPage() {
     );
   }
 
+  // Deliberate demo scope: first page only. Pagination via
+  // `hasNextPage`/`endCursor` (already returned by listInventoryProducts)
+  // is intentionally out of scope here, not an oversight.
   const { products } = await listInventoryProducts({ first: 50 });
   const rows = flattenRows(products);
 

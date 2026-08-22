@@ -10,3 +10,5 @@ export type { TableColumn, TableProps } from "./Table";
 export { Skeleton } from "./Skeleton";
 export { AppShell } from "./AppShell";
 export type { AppShellProps, NavLink } from "./AppShell";
+export { TopNav } from "./TopNav";
+export type { TopNavProps } from "./TopNav";

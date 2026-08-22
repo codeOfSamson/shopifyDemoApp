@@ -29,6 +29,13 @@ packages/
 Multi-Zones) — the two apps have independent `package.json`s and build
 pipelines, sharing code only through the `packages/*` workspace packages.
 
+The rewrite target is `INVENTORY_OPS_ORIGIN` (`apps/web/next.config.ts`,
+`apps/web/.env.local.example`): the base URL of the `inventory-ops` zone.
+It defaults to `http://localhost:3001` for local dev, but a real deploy
+**must** set it to `inventory-ops`'s actual production URL — otherwise
+`web`'s `/inventory` rewrite silently points at localhost and the
+Multi-Zones split breaks in production.
+
 ## React patterns on display
 
 - **Streaming Suspense**: the inventory page's "Reorder recommendations"
@@ -48,7 +55,8 @@ pipelines, sharing code only through the `packages/*` workspace packages.
 3. **Storefront API** (for `apps/web`): Settings → Apps and sales
    channels → Develop apps → Create an app → enable Storefront API
    scopes → install → copy the token into `apps/web/.env.local`
-   (`SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_ACCESS_TOKEN`).
+   (`SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_ACCESS_TOKEN`). See
+   `apps/web/.env.local.example`.
 4. **Admin API** (for `apps/inventory-ops`): same app (or a new one) →
    Admin API integration → enable `read_products`, `read_inventory`,
    `read_locations` → install → copy the token into
